@@ -115,9 +115,12 @@ sim.create_gen({
     [1, {'path': [3, *road(12+7*n), 6]}]
 ]})
 
-sim.create_signal([[0, 2], [1, 3]])
+sim.create_signal([[0]],config={'current_cycle_index':1})
+sim.create_signal([[1]])
+sim.create_signal([[2]])
+sim.create_signal([[3]])
 
 # Start simulation
 win = Window(sim)
 win.zoom = 10
-win.run(steps_per_update=10)
+win.run(steps_per_update=15)
