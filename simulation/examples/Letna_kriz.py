@@ -129,9 +129,16 @@ sim.create_gen({
 
     ]})
 
-parameters = {"cycle": [(True, False), (False, False)]}
-
+#parameters = {"cycle": [(True, False), (False, True)]}
+sim.create_signal([[0]],config={'current_cycle_index':1})
+sim.create_signal([[1]])
+sim.create_signal([[2]])
+sim.create_signal([[3]])
+sim.create_signal([[4]])
+sim.create_signal([[5]])
+sim.create_signal([[6]])
 # Start simulation
+
 win = Window(sim)
 win.zoom = 10
-win.run(steps_per_update=10)
+win.run(steps_per_update=30)

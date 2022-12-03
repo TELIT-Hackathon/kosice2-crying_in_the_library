@@ -53,9 +53,30 @@ class Simulation:
         # Add vehicles
         for gen in self.generators:
             gen.update()
-
+        '''
         for signal in self.traffic_signals:
-            signal.update(self)
+            if signal.current_cycle_index == 1:
+                signal.update(self)
+        '''
+
+        for i in range(len(self.traffic_signals)):
+            if self.traffic_signals[i].current_cycle_index == 1:
+                #print(f'index {i}')
+                self.traffic_signals[i].update(self)
+
+                if self.traffic_signals[i].current_cycle_index == 0:
+
+                    if i != len(self.traffic_signals)-1:
+                        sd = len(self.traffic_signals)
+                        #print(f'index {sd}')
+                        self.traffic_signals[i+1].current_cycle_index = 1
+                    else:
+                        print('here')
+                        self.traffic_signals[0].current_cycle_index = 1
+
+
+
+
 
         # Check roads for out of bounds vehicle
         for road in self.roads:
