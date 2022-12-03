@@ -4,7 +4,7 @@ from simulation.trafficSimulator import *
 sim = Simulation()
 
 # Play with these
-n = 30
+n = 25
 a = 2
 b = 12
 l = 100
@@ -57,8 +57,8 @@ NORTH_OUTBOUND = (NORTH_LEFT, NORTH_LEFT_START)
 
 WEST_STRAIGHT = (WEST_RIGHT, EAST_LEFT)
 SOUTH_STRAIGHT = (SOUTH_RIGHT, NORTH_LEFT)
-EAST_STRAIGHT = (EAST_RIGHT, WEST_LEFT)
-NORTH_STRAIGHT = (NORTH_MID, SOUTH_LEFT)
+EAST_STRAIGHT = (EAST_MID, WEST_LEFT)
+NORTH_STRAIGHT = (NORTH_RIGHT, SOUTH_LEFT)
 
 WEST_RIGHT_TURN = turn_road(WEST_RIGHT, SOUTH_LEFT, TURN_RIGHT, n)
 WEST_LEFT_TURN = turn_road(WEST_RIGHT, NORTH_LEFT, TURN_LEFT, n)
@@ -111,9 +111,22 @@ def road(a): return range(a, a + n)
 sim.create_gen({
     'vehicle_rate': 25,
     'vehicles': [
-        [3, {'path': [0, 11, 9]}],
-        [1, {'path': [0, *road(15), 8]}],
-        [1, {'path': [0, *road(16), 10]}],
+       [1, {'path': [0, 11, 9]}],
+       [1, {'path': [0, *road(15), 8]}],
+       [1, {'path': [0, *road(15+n), 10]}],
+
+       [1, {'path': [1, 12, 10]}],
+       [1, {'path': [1, *road(15+2*n), 9]}],
+       [1, {'path': [2, *road(15+3*n), 7]}],
+
+        [1, {'path': [4, 13, 7]}],
+        [1, {'path': [3, *road(15+4*n), 10]}],
+        [1, {'path': [4, *road(15+5*n), 8]}],
+
+        [1, {'path': [5, *road(15+6*n), 7]}],
+        [1, {'path': [5, 14, 8]}],
+        [1, {'path': [6, *road(15+7*n), 9]}],
+
     ]})
 
 parameters = {"cycle": [(True, False), (False, False)]}
