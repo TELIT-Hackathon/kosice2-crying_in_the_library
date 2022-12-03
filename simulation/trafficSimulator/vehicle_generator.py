@@ -24,16 +24,18 @@ class VehicleGenerator:
         self.last_added_time = 0
 
     def init_properties(self):
-        self.upcoming_vehicle = self.generate_vehicle()
+        self.sim.cars_spawned += 1
+        self.upcoming_vehicle = self.generate_vehicle(self.sim.cars_spawned)
 
-    def generate_vehicle(self):
+    def generate_vehicle(self,nth_car):
         """Returns a random vehicle from self.vehicles with random proportions"""
         total = sum(pair[0] for pair in self.vehicles)
         r = randint(1, total+1)
         for (weight, config) in self.vehicles:
             r -= weight
             if r <= 0:
-                return Vehicle(config)
+
+                return Vehicle(nth_car,config)
 
     def update(self):
         """Add vehicles"""
@@ -48,5 +50,9 @@ class VehicleGenerator:
                 road.vehicles.append(self.upcoming_vehicle)
                 # Reset last_added_time and upcoming_vehicle
                 self.last_added_time = self.sim.t
-            self.upcoming_vehicle = self.generate_vehicle()
+            # Counts how many cars have been spawned
+            self.sim.cars_spawned += 1
+            self.upcoming_vehicle = self.generate_vehicle(self.sim.cars_spawned)
+
+
 

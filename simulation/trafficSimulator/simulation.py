@@ -12,6 +12,7 @@ class Simulation:
         for attr, val in config.items():
             setattr(self, attr, val)
 
+
     def set_default_config(self):
         self.t = 0.0            # Time keeping
         self.frame_count = 0    # Frame count keeping
@@ -20,6 +21,9 @@ class Simulation:
         self.generators = []
         self.traffic_signals = []
         self.road_priority = []
+        self.cars_spawned = 0
+        self.cars_crossed = set()
+
     def create_road(self, start, end):
         road = Road(start, end)
         self.roads.append(road)
@@ -28,6 +32,7 @@ class Simulation:
     def create_roads(self, road_list):
         for road in road_list:
             self.create_road(*road)
+
 
     def create_gen(self, config={}):
         gen = VehicleGenerator(self, config)
@@ -60,8 +65,15 @@ class Simulation:
             vehicle = road.vehicles[0]
             # If first vehicle is out of road bounds
             if vehicle.x >= road.length:
+                #Checks if car has crossed road before if not,
+                # will add car to cars that crossed road
+                if vehicle.id not in self.cars_crossed:
+                    self.cars_crossed.add(vehicle.id)
+                    print(len(self.cars_crossed))
+
                 # If vehicle has a next road
                 if vehicle.current_road_index + 1 < len(vehicle.path):
+
                     # Update current road to next road
                     vehicle.current_road_index += 1
                     # Create a copy and reset some vehicle properties
@@ -71,7 +83,7 @@ class Simulation:
                     next_road_index = vehicle.path[vehicle.current_road_index]
                     self.roads[next_road_index].vehicles.append(new_vehicle)
                 # In all cases, remove it from its road
-                road.vehicles.popleft() 
+                road.vehicles.popleft()
 
         # Increment time
         self.t += self.dt

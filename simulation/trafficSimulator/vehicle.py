@@ -2,7 +2,8 @@ import numpy as np
 import time
 
 class Vehicle:
-    def __init__(self, config={}):
+    def __init__(self,id, config={}):
+        self.id = id
         # Set default configuration
         self.set_default_config()
 
@@ -12,6 +13,7 @@ class Vehicle:
 
         # Calculate properties
         self.init_properties()
+
 
     def set_default_config(self):    
         self.l = 4
