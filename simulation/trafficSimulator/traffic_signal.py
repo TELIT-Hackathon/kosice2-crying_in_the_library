@@ -39,8 +39,9 @@ class TrafficSignal:
         #k = (sim.t // cycle_length) % 2
 
         self.tochange -= 1
-        print(self.tochange)
+        #print(self.tochange)
         if self.tochange <= 0:
-            self.current_cycle_index = not self.current_cycle_index
+            self.current_cycle_index = 0
+            self.tochange = 3000
 
 
