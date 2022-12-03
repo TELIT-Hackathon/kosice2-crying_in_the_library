@@ -55,12 +55,12 @@ class Vehicle:
         self.a = self.a_max * (1-(self.v/self.v_max)**4 - alpha**2)
 
         if self.stopped:
-            self.stop_start = time.time()
             self.a = -self.b_max*self.v/self.v_max
         else:
             self.stop_start = None
 
     def stop(self):
+        self.stop_start = time.time()
         self.stopped = True
 
     def unstop(self):
