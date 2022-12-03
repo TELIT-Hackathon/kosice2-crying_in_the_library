@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import folium
 
-df = pd.read_csv("./hackathon/Waze Data 2508 Košice_fixed.csv",nrows=30000,sep=";")
+df = pd.read_csv("./kosice2-crying_in_the_library/data analysis/Waze Data 2508 Košice_fixed.csv",nrows=30000,sep=";")
 #print(df.head())
 #df = df.dropna(axis=0)
 df_geo = df[(df.City == "Košice") & (df.Type == "ACCIDENT") & (df.Subtype == "ACCIDENT_MAJOR")]["Location"].copy()
