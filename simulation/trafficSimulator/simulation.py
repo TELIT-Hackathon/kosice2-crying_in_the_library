@@ -19,7 +19,7 @@ class Simulation:
         self.roads = []         # Array to store roads
         self.generators = []
         self.traffic_signals = []
-
+        self.road_priority = []
     def create_road(self, start, end):
         road = Road(start, end)
         self.roads.append(road)
@@ -44,7 +44,7 @@ class Simulation:
         # Update every road
         for road in self.roads:
             road.update(self.dt)
-
+            self.road_priority.append(self.countRoadPrio(road))
         # Add vehicles
         for gen in self.generators:
             gen.update()
@@ -72,11 +72,18 @@ class Simulation:
                     self.roads[next_road_index].vehicles.append(new_vehicle)
                 # In all cases, remove it from its road
                 road.vehicles.popleft() 
+
         # Increment time
         self.t += self.dt
         self.frame_count += 1
-
-
+        self.road_priority = []
+    def countVehiclePrio(self,vehicle):
+        return vehicle.countPrio()
+    def countRoadPrio(self,road):
+        sum = 0
+        for vehicle in road.vehicles:
+            sum += self.countVehiclePrio(vehicle)
+        return sum
     def run(self, steps):
         for _ in range(steps):
             self.update()

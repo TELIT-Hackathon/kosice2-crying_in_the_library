@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 class Vehicle:
     def __init__(self, config={}):
@@ -27,6 +28,8 @@ class Vehicle:
         self.v = self.v_max
         self.a = 0
         self.stopped = False
+        self.stop_start = None
+        self.stop_end = None
 
     def init_properties(self):
         self.sqrt_ab = 2*np.sqrt(self.a_max*self.b_max)
@@ -51,9 +54,12 @@ class Vehicle:
 
         self.a = self.a_max * (1-(self.v/self.v_max)**4 - alpha**2)
 
-        if self.stopped: 
+        if self.stopped:
+            self.stop_start = time.time()
             self.a = -self.b_max*self.v/self.v_max
-        
+        else:
+            self.stop_start = None
+
     def stop(self):
         self.stopped = True
 
@@ -65,5 +71,18 @@ class Vehicle:
 
     def unslow(self):
         self.v_max = self._v_max
-        
+
+    def getStopTime(self):
+        if self.stop_start != None:
+            return self.stop_start - time.time()
+        else:
+            return 0
+
+    def countPrio(self):
+        time = self.getStopTime()
+        if time != None:
+            prio = time * time
+        else:
+            prio = 0
+        return prio
 
