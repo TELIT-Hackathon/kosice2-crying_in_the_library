@@ -23,6 +23,7 @@ class Simulation:
         self.road_priority = []
         self.cars_spawned = 0
         self.cars_crossed = set()
+        self.throughput = 0
 
     def create_road(self, start, end):
         road = Road(start, end)
@@ -71,12 +72,8 @@ class Simulation:
                         #print(f'index {sd}')
                         self.traffic_signals[i+1].current_cycle_index = 1
                     else:
-                        print('here')
+                        #print('here')
                         self.traffic_signals[0].current_cycle_index = 1
-
-
-
-
 
         # Check roads for out of bounds vehicle
         for road in self.roads:
@@ -90,7 +87,8 @@ class Simulation:
                 # will add car to cars that crossed road
                 if vehicle.id not in self.cars_crossed:
                     self.cars_crossed.add(vehicle.id)
-                    print(len(self.cars_crossed))
+                    self.update_troughput()
+                    print(self.throughput)
 
                 # If vehicle has a next road
                 if vehicle.current_road_index + 1 < len(vehicle.path):
@@ -120,3 +118,5 @@ class Simulation:
     def run(self, steps):
         for _ in range(steps):
             self.update()
+    def update_troughput(self):
+        self.throughput = len(self.cars_crossed) / self.t * 60
