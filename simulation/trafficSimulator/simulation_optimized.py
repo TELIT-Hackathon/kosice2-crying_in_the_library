@@ -39,7 +39,6 @@ class Simulation2:
         for road in road_list:
             self.create_road(*road)
 
-
     def create_gen(self, config={}):
         gen = VehicleGenerator(self, config)
         self.generators.append(gen)
@@ -59,44 +58,29 @@ class Simulation2:
                 self.road_priority.append(self.countRoadPrio(road))
                 vehicleCount = self.countVehicles(road)
                 self.road_vehiclesGreenTime.append(self.countGreenTime(vehicleCount))
-                #print(self.road_vehiclesGreenTime)
+
         # Add vehicles
         for gen in self.generators:
             gen.update()
-        '''
-        for signal in self.traffic_signals:
-            if signal.current_cycle_index == 1:
-                signal.update(self)
-        '''
-        for i in range(len(self.traffic_order)):
-            for j in range((len(self.traffic_order[i]))):
-                #self.traffic_order[i].update()
-                if self.traffic_signals[self.traffic_order[i][j]].current_cycle_index == 1:
-                    self.traffic_signals[self.traffic_order[i][j]].update(self.traffic_time[i])
-                    if self.traffic_signals[self.traffic_order[i][j]].current_cycle_index == 0:
-                        #if i < len(self.traffic_order)-1:
-                        #nth number of road should be lit to green
-                        self.max_index = self.choose_prio_road()
-                        optimal_x = 0
 
-                        for index,node in enumerate(self.traffic_order):
-                            if self.max_index in node:
-                                optimal_x = index
-                                break
+        print(self.road_vehiclesGreenTime)
 
-                            print(self.road_priority)
-                            print("OPTIMAL X: " + str(optimal_x))
+        #Update semaphores
+        for index,sem in enumerate(self.traffic_signals):
+            if sem.current_cycle_index:
+                sem.update(self.road_vehiclesGreenTime[index])
 
-                        try:
-                            self.traffic_signals[self.traffic_order[optimal_x][j]].current_cycle_index = 1
-                        except:
-                            print("FUCK")
-                        #else:
-                        #    self.max_index = self.choose_prio_road()
-                        #    self.traffic_signals[self.traffic_order[0][0]].current_cycle_index = 1
-                        #    self.traffic_signals[self.traffic_order[0][1]].current_cycle_index = 1
+        semaphor_not_running = all(sem.current_cycle_index == 0 for sem in self.traffic_signals)
 
+        #Start semaphore if none is running
+        if semaphor_not_running:
+            self.max_index = self.choose_prio_road()
 
+            for tr_light_index, node in enumerate(self.traffic_order):
+                if self.max_index in node:
+                    for semaphor in self.traffic_order[tr_light_index]:
+                        self.traffic_signals[semaphor].current_cycle_index = 1
+                    break
 
         # Check roads for out of bounds vehicle
         for road in self.roads:
@@ -160,25 +144,14 @@ class Simulation2:
                 if t > 1:
                     t = math.log(t)
             greenTime += t
+        if greenTime < 3:
+            return 3
+
         return greenTime
 
     def update_troughput(self):
         self.throughput = len(self.cars_crossed) / self.t * 60
 
     def choose_prio_road(self):
-        max_index = 0
-        max_prio = 0
-        max_prio_index = 0
-        max_greenTime = 0
-        max_greenTime_index = 0
-        for i in range(len(self.road_priority)):
-            if self.road_priority[i] > max_prio:
-                max_prio = self.road_priority[i]
-                max_prio_index = i
-        for j in range(len(self.road_vehiclesGreenTime)):
-            if self.road_vehiclesGreenTime[j] > max_greenTime:
-                max_greenTime = self.road_vehiclesGreenTime[j]
-                max_greenTime_index = j
-        if max_greenTime_index != max_prio_index:
-            max_index = max_prio_index
-        return max_index
+        max_prio = max(self.road_priority)
+        return self.road_priority.index(max_prio)

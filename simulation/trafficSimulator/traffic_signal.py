@@ -42,8 +42,9 @@ class TrafficSignal:
             self.tochange = set_time*100
             self.current_cycle_index = 1
             self.first = False
+
         else:
-            if self.current_cycle_index == 1:
+            if self.current_cycle_index:
                 self.tochange -= 1
                 #print(f'change {self.tochange}')
                 if self.tochange <= 0:
