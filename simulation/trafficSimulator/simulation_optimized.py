@@ -65,7 +65,7 @@ class Simulation2:
 
         print(self.road_vehiclesGreenTime)
 
-        #Update semaphores
+        # Update semaphores
         for index,sem in enumerate(self.traffic_signals):
             if sem.current_cycle_index:
                 sem.update(self.road_vehiclesGreenTime[index])
@@ -133,21 +133,18 @@ class Simulation2:
         return road.getVehiclesCount()
 
     def countGreenTime(self,vehicleCount):
-        car_length = 4
-        gap_length = 2
-        car_acc = 4
-        greenTime = 0
-        for i in range(vehicleCount-1):
-            s = i*car_length+(i+1)*gap_length
-            t = math.sqrt(2*s-car_acc)
-            for j in range(i):
-                if t > 1:
-                    t = math.log(t)
-            greenTime += t
-        if greenTime < 3:
-            return 3
+        if vehicleCount == 1:
+            return 4
+        if vehicleCount > 7:
+            vehicleCount = 7
 
-        return greenTime
+        decay_rate = 0.5
+        base = 4
+        green_time = 0
+        for i in range(vehicleCount):
+            green_time += base * math.exp(-decay_rate*i)
+
+        return green_time
 
     def update_troughput(self):
         self.throughput = len(self.cars_crossed) / self.t * 60
