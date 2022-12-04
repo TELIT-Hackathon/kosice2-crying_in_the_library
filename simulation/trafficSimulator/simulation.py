@@ -9,6 +9,7 @@ class Simulation:
         self.set_default_config()
         self.traffic_order = [[1,5],[3,6],[0],[4],[1,5],[2,3],[0]]
         self.traffic_time = [27,20,15,15,15,15,10]
+        self.state = 0
         # Update configuration
         for attr, val in config.items():
             setattr(self, attr, val)
@@ -56,7 +57,7 @@ class Simulation:
                 self.road_priority.append(self.countRoadPrio(road))
                 vehicleCount = self.countVehicles(road)
                 self.road_vehiclesGreenTime.append(self.countGreenTime(vehicleCount))
-                print(self.road_vehiclesGreenTime)
+                #print(self.road_vehiclesGreenTime)
         # Add vehicles
         for gen in self.generators:
             gen.update()
@@ -65,20 +66,80 @@ class Simulation:
             if signal.current_cycle_index == 1:
                 signal.update(self)
         '''
+        '''
         for i in range(len(self.traffic_order)):
             for j in range((len(self.traffic_order[i]))):
                 #self.traffic_order[i].update()
                 if self.traffic_signals[self.traffic_order[i][j]].current_cycle_index == 1:
-                    self.traffic_signals[self.traffic_order[i][j]].update(self,self.traffic_time[i])
+                    self.traffic_signals[self.traffic_order[i][j]].update(self.traffic_time[i])
                     if self.traffic_signals[self.traffic_order[i][j]].current_cycle_index == 0:
                         if i < len(self.traffic_order)-1:
-                            try:
-                                self.traffic_signals[self.traffic_order[i+1][j]].current_cycle_index = 1
-                            except:
-                                print()
+                            #TODO choose next - i+1[all]
+                            for h in range(len(self.traffic_order[i+1])):
+                                self.traffic_signals[self.traffic_order[i + 1][h]].current_cycle_index = 1
                         else:
                             self.traffic_signals[self.traffic_order[0][0]].current_cycle_index = 1
                             self.traffic_signals[self.traffic_order[0][1]].current_cycle_index = 1
+        '''
+        print(f'state {self.state}')
+        if self.state == 0:
+            for h in range(len(self.traffic_order[0])):
+                self.traffic_signals[self.traffic_order[0][h]].update(self.traffic_time[self.state])
+
+            if self.traffic_signals[self.traffic_order[0][0]].current_cycle_index == 0 or self.traffic_signals[self.traffic_order[0][1]].current_cycle_index == 0 :
+
+                self.traffic_signals[self.traffic_order[0][0]].current_cycle_index = 0
+                self.traffic_signals[self.traffic_order[0][1]].current_cycle_index = 0
+                self.state = 1
+        elif self.state == 1:#self.traffic_order = [[1,5],[3,6],[0],[4],[1,5],[2,3],[0]]
+            for h in range(len(self.traffic_order[self.state])):
+                self.traffic_signals[self.traffic_order[self.state][h]].update(self.traffic_time[self.state])
+
+            if self.traffic_signals[self.traffic_order[self.state][0]].current_cycle_index == 0:
+                self.traffic_signals[self.traffic_order[self.state][0]].current_cycle_index = 0
+                self.traffic_signals[self.traffic_order[self.state][1]].current_cycle_index = 0
+                self.state = 2
+
+        elif self.state == 2:#self.traffic_order = [[1,5],[3,6],[0],[4],[1,5],[2,3],[0]]
+            for h in range(len(self.traffic_order[self.state])):
+                self.traffic_signals[self.traffic_order[self.state][h]].update(self.traffic_time[self.state])
+
+            if self.traffic_signals[self.traffic_order[self.state][0]].current_cycle_index == 0:
+
+                self.traffic_signals[self.traffic_order[self.state][0]].current_cycle_index = 0
+                self.state = 3
+
+        elif self.state == 3:#self.traffic_order = [[1,5],[3,6],[0],[4],[1,5],[2,3],[0]]
+            for h in range(len(self.traffic_order[self.state])):
+                self.traffic_signals[self.traffic_order[self.state][h]].update(self.traffic_time[self.state])
+
+            if self.traffic_signals[self.traffic_order[self.state][0]].current_cycle_index == 0:
+
+                self.traffic_signals[self.traffic_order[self.state][0]].current_cycle_index = 0
+                self.state = 4
+        elif self.state == 4:#self.traffic_order = [[1,5],[3,6],[0],[4],[1,5],[2,3],[0]]
+            for h in range(len(self.traffic_order[self.state])):
+                self.traffic_signals[self.traffic_order[self.state][h]].update(self.traffic_time[self.state])
+
+            if self.traffic_signals[self.traffic_order[self.state][0]].current_cycle_index == 0:
+
+                self.traffic_signals[self.traffic_order[self.state][0]].current_cycle_index = 0
+                self.traffic_signals[self.traffic_order[self.state][1]].current_cycle_index = 0
+                self.state = 5
+
+        elif self.state == 5:#self.traffic_order = [[1,5],[3,6],[0],[4],[1,5],[2,3],[0]]
+            for h in range(len(self.traffic_order[self.state])):
+                self.traffic_signals[self.traffic_order[self.state][h]].update(self.traffic_time[self.state])
+
+            if self.traffic_signals[self.traffic_order[self.state][0]].current_cycle_index == 0:
+
+                self.traffic_signals[self.traffic_order[self.state][0]].current_cycle_index = 0
+                self.state = 1
+
+        #ifland
+        #if self.traffic_signals[self.traffic_order[i][j]].current_cycle_index == 1:
+
+
         """for i in range(len(self.traffic_signals)):
             if self.traffic_signals[i].current_cycle_index == 1:
                 #print(f'index {i}')
@@ -109,7 +170,7 @@ class Simulation:
                 if vehicle.id not in self.cars_crossed:
                     self.cars_crossed.add(vehicle.id)
                     self.update_troughput()
-                    print(self.throughput)
+                    #print(self.throughput)
 
                 # If vehicle has a next road
                 if vehicle.current_road_index + 1 < len(vehicle.path):
@@ -133,6 +194,8 @@ class Simulation:
 
     def countVehiclePrio(self,vehicle):
         return vehicle.countPrio()
+
+
 
     def countRoadPrio(self,road):
         sum = 0

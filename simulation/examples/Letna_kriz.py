@@ -131,14 +131,14 @@ sim.create_gen({
 
 #parameters = {"cycle": [(True, False), (False, True)]}
 sim.create_signal([[0]],config={'current_cycle_index':0,'identify':1,'senzor':True})
-sim.create_signal([[1]],config={'current_cycle_index':1,'identify':2,'senzor':False,'to_change':2700})
+sim.create_signal([[1]],config={'current_cycle_index':1,'identify':2,'senzor':False,'to_change':27})
 sim.create_signal([[2]],config={'current_cycle_index':0,'identify':3,'senzor':True})
 sim.create_signal([[3]],config={'current_cycle_index':0,'identify':4,'senzor':True})
 sim.create_signal([[4]],config={'current_cycle_index':0,'identify':5,'senzor':True})
-sim.create_signal([[5]],config={'current_cycle_index':1,'identify':6,'senzor':False,'to_change':2700})
+sim.create_signal([[5]],config={'current_cycle_index':1,'identify':6,'senzor':False,'to_change':27})
 sim.create_signal([[6]],config={'current_cycle_index':0,'identify':7,'senzor':True})
 # Start simulation
 
 win = Window(sim)
 win.zoom = 10
-win.run(steps_per_update=10)
+win.run(steps_per_update=15)

@@ -9,10 +9,10 @@ class TrafficSignal:
             setattr(self, attr, val)
         # Calculate properties
         self.init_properties()
-        self.tochange = 3000
+        self.tochange = 0
         self.senzor = False
         self.identify = 0
-        self.first = False
+        self.first = True
 
     # zakladne nastavenie semaforov - list vsetkych traffic lights, 1 ako zacne 2 naco sa meni
     def set_default_config(self):
@@ -35,19 +35,21 @@ class TrafficSignal:
         #print(self.cycle[self.current_cycle_index])
         return self.cycle[self.current_cycle_index]
     
-    def update(self, sim,set_time):
+    def update(self, set_time):
         # TODO tu pojde nase menenie traffic light
 
         if self.first:
             self.tochange = set_time*100
+            self.current_cycle_index = 1
             self.first = False
         else:
             if self.current_cycle_index == 1:
                 self.tochange -= 1
-                print(self.tochange)
+                print(f'change {self.tochange}')
                 if self.tochange <= 0:
-                    self.current_cycle_index = 0
                     self.first = True
+                    self.current_cycle_index = 0
+
 
 
 
