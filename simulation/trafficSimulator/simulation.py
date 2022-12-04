@@ -81,7 +81,7 @@ class Simulation:
                             self.traffic_signals[self.traffic_order[0][0]].current_cycle_index = 1
                             self.traffic_signals[self.traffic_order[0][1]].current_cycle_index = 1
         '''
-        print(f'state {self.state}')
+        #print(f'state {self.state}')
         if self.state == 0:
             for h in range(len(self.traffic_order[0])):
                 self.traffic_signals[self.traffic_order[0][h]].update(self.traffic_time[self.state])
