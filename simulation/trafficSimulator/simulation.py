@@ -1,8 +1,15 @@
+import time
+
 from .road import Road
 from copy import deepcopy
 from .vehicle_generator import VehicleGenerator
 from .traffic_signal import TrafficSignal
+from array import *
 import math
+
+from ..stat.statistics import Statictics
+
+
 class Simulation:
     def __init__(self, config={}):
         # Set default configuration
@@ -29,6 +36,10 @@ class Simulation:
         self.throughput = 0
         self.TotalStopTime=0
         self.amountcarscrossed=0
+        self.simstarttime=time.time()
+        self.stoptimestats=[]
+        self.allstats=[]
+        self.metricsdone=False
 
     def create_road(self, start, end,type=None):
         road = Road(start, end,type)
@@ -53,6 +64,10 @@ class Simulation:
 
     def update(self):
         # Update every road
+        if(time.time()-self.simstarttime>60 and self.metricsdone==False):
+            self.allstats.append(self.stoptimestats)
+            Statictics().smthin(self.allstats)
+            self.metricsdone=True
         for road in self.roads:
             road.update(self.dt)
             if road.type == "Inbound":
@@ -178,7 +193,8 @@ class Simulation:
                         self.amountcarscrossed+=1
                     vehicle.crossedsemaphor=True
                     if(self.amountcarscrossed!=0):
-                        print(self.TotalStopTime/self.amountcarscrossed)
+                        self.stoptimestats.append([str(time.time()-self.simstarttime),str(self.TotalStopTime/self.amountcarscrossed)])
+                        #print(self.stoptimestats)
 
 
                 # If vehicle has a next road
