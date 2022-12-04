@@ -2,7 +2,7 @@ from .road import Road
 from copy import deepcopy
 from .vehicle_generator import VehicleGenerator
 from .traffic_signal import TrafficSignal
-
+import math
 class Simulation:
     def __init__(self, config={}):
         # Set default configuration
@@ -22,11 +22,13 @@ class Simulation:
         self.generators = []
         self.traffic_signals = []
         self.road_priority = []
+        self.road_vehiclesGreenTime = []
         self.cars_spawned = 0
         self.cars_crossed = set()
+        self.throughput = 0
 
-    def create_road(self, start, end):
-        road = Road(start, end)
+    def create_road(self, start, end,type=None):
+        road = Road(start, end,type)
         self.roads.append(road)
         return road
 
@@ -50,7 +52,11 @@ class Simulation:
         # Update every road
         for road in self.roads:
             road.update(self.dt)
-            self.road_priority.append(self.countRoadPrio(road))
+            if road.type == "Inbound":
+                self.road_priority.append(self.countRoadPrio(road))
+                vehicleCount = self.countVehicles(road)
+                self.road_vehiclesGreenTime.append(self.countGreenTime(vehicleCount))
+                print(self.road_vehiclesGreenTime)
         # Add vehicles
         for gen in self.generators:
             gen.update()
@@ -85,13 +91,9 @@ class Simulation:
                         #print(f'index {sd}')
                         self.traffic_signals[i+1].current_cycle_index = 1
                     else:
-                        print('here')
+                        #print('here')
                         self.traffic_signals[0].current_cycle_index = 1
         """
-
-
-
-
 
 
         # Check roads for out of bounds vehicle
@@ -106,7 +108,8 @@ class Simulation:
                 # will add car to cars that crossed road
                 if vehicle.id not in self.cars_crossed:
                     self.cars_crossed.add(vehicle.id)
-                    print(len(self.cars_crossed))
+                    self.update_troughput()
+                    print(self.throughput)
 
                 # If vehicle has a next road
                 if vehicle.current_road_index + 1 < len(vehicle.path):
@@ -126,8 +129,11 @@ class Simulation:
         self.t += self.dt
         self.frame_count += 1
         self.road_priority = []
+        self.road_vehiclesGreenTime = []
+
     def countVehiclePrio(self,vehicle):
         return vehicle.countPrio()
+
     def countRoadPrio(self,road):
         sum = 0
         for vehicle in road.vehicles:
@@ -136,3 +142,24 @@ class Simulation:
     def run(self, steps):
         for _ in range(steps):
             self.update()
+
+    def countVehicles(self,road):
+        return road.getVehiclesCount()
+
+    def countGreenTime(self,vehicleCount):
+        car_length = 4
+        gap_length = 2
+        car_acc = 4
+        greenTime = 0
+        for i in range(vehicleCount-1):
+            s = i*car_length+(i+1)*gap_length
+            t = math.sqrt(2*s-car_acc)
+            for j in range(i):
+                if t > 1:
+                    t = math.log(t)
+            greenTime += t
+        return greenTime
+
+    def update_troughput(self):
+        self.throughput = len(self.cars_crossed) / self.t * 60
+

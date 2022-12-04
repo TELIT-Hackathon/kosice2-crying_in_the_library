@@ -2,13 +2,14 @@ from scipy.spatial import distance
 from collections import deque
 
 class Road:
-    def __init__(self, start, end):
+    def __init__(self, start, end,type=None):
         self.start = start
         self.end = end
-
+        self.type = type
         self.vehicles = deque()
 
         self.init_properties()
+
 
     def init_properties(self):
         self.length = distance.euclidean(self.start, self.end)
@@ -16,6 +17,7 @@ class Road:
         self.angle_cos = (self.end[0]-self.start[0]) / self.length
         # self.angle = np.arctan2(self.end[1]-self.start[1], self.end[0]-self.start[0])
         self.has_traffic_signal = False
+
 
     def set_traffic_signal(self, signal, group):
         self.traffic_signal = signal
@@ -56,3 +58,6 @@ class Road:
                    self.vehicles[0].x <= self.length - self.traffic_signal.stop_distance / 2:
                     # Stop vehicles in the stop zone
                     self.vehicles[0].stop()
+
+    def getVehiclesCount(self):
+        return len(self.vehicles)
