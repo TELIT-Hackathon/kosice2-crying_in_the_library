@@ -56,3 +56,6 @@ class Road:
                    self.vehicles[0].x <= self.length - self.traffic_signal.stop_distance / 2:
                     # Stop vehicles in the stop zone
                     self.vehicles[0].stop()
+
+    def getVehiclesCount(self):
+        return len(self.vehicles)

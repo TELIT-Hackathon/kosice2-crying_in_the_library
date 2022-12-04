@@ -2,7 +2,7 @@ from .road import Road
 from copy import deepcopy
 from .vehicle_generator import VehicleGenerator
 from .traffic_signal import TrafficSignal
-
+import math
 class Simulation:
     def __init__(self, config={}):
         # Set default configuration
@@ -21,6 +21,7 @@ class Simulation:
         self.generators = []
         self.traffic_signals = []
         self.road_priority = []
+        self.road_vehiclesGreenTime = []
         self.cars_spawned = 0
         self.cars_crossed = set()
 
@@ -50,6 +51,9 @@ class Simulation:
         for road in self.roads:
             road.update(self.dt)
             self.road_priority.append(self.countRoadPrio(road))
+            vehicleCount = self.countVehicles(road)
+            self.road_vehiclesGreenTime.append(self.countGreenTime(vehicleCount))
+            print(self.road_vehiclesGreenTime)
         # Add vehicles
         for gen in self.generators:
             gen.update()
@@ -110,8 +114,11 @@ class Simulation:
         self.t += self.dt
         self.frame_count += 1
         self.road_priority = []
+        self.road_vehiclesGreenTime = []
+
     def countVehiclePrio(self,vehicle):
         return vehicle.countPrio()
+
     def countRoadPrio(self,road):
         sum = 0
         for vehicle in road.vehicles:
@@ -120,3 +127,17 @@ class Simulation:
     def run(self, steps):
         for _ in range(steps):
             self.update()
+
+    def countVehicles(self,road):
+        return road.getVehiclesCount()
+
+    def countGreenTime(self,vehicleCount):
+        car_length = 4
+        gap_length = 2
+        car_acc = 4
+        greenTime = 0
+        for i in range(vehicleCount-1):
+            s = i*car_length+(i+1)*gap_length
+            t = math.sqrt(2*s-car_acc)
+            greenTime += t
+        return greenTime
