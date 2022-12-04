@@ -36,8 +36,6 @@ class TrafficSignal:
         return self.cycle[self.current_cycle_index]
     
     def update(self, set_time):
-        # TODO tu pojde nase menenie traffic light
-
         if self.first:
             self.tochange = set_time*100
             self.current_cycle_index = 1
