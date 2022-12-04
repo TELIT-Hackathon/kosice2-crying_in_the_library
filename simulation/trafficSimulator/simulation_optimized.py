@@ -117,13 +117,13 @@ class Simulation2:
         self.road_priority = []
         self.road_vehiclesGreenTime = []
 
-    def countVehiclePrio(self,vehicle):
-        return vehicle.countPrio()
+    def countVehiclePrio(self,vehicle,total):
+        return vehicle.countPrio(total)
 
     def countRoadPrio(self,road):
         sum = 0
         for vehicle in road.vehicles:
-            sum += self.countVehiclePrio(vehicle)
+            sum += self.countVehiclePrio(vehicle,len(road.vehicles))
         return sum
     def run(self, steps):
         for _ in range(steps):
@@ -138,7 +138,7 @@ class Simulation2:
         if vehicleCount > 7:
             vehicleCount = 7
 
-        decay_rate = 0.5
+        decay_rate = 0.4
         base = 4
         green_time = 0
         for i in range(vehicleCount):

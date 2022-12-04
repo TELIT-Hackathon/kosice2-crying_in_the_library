@@ -93,10 +93,10 @@ class Vehicle:
     def getTotalStopTime(self):
         return self.totalStopTime
 
-    def countPrio(self):
-        time = self.getStopTime()
+    def countPrio(self,total_vehicles):
+        time = self.getTotalStopTime()
         if time != None:
-            prio = time * time
+            prio = 1 + (time * time)/(total_vehicles*0.1)
         else:
             prio = 0
         return prio
