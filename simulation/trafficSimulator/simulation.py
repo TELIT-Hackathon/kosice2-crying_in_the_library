@@ -66,7 +66,7 @@ class Simulation:
         # Update every road
         if(time.time()-self.simstarttime>60 and self.metricsdone==False):
             self.allstats.append(self.stoptimestats)
-            Statictics().smthin(self.allstats)
+            Statictics().chartoriginal(self.allstats)
             self.metricsdone=True
         for road in self.roads:
             road.update(self.dt)
@@ -217,15 +217,14 @@ class Simulation:
         self.road_priority = []
         self.road_vehiclesGreenTime = []
 
-    def countVehiclePrio(self,vehicle):
-        return vehicle.countPrio()
+
 
 
 
     def countRoadPrio(self,road):
         sum = 0
         for vehicle in road.vehicles:
-            sum += self.countVehiclePrio(vehicle)
+            sum += 0
         return sum
     def run(self, steps):
         for _ in range(steps):
