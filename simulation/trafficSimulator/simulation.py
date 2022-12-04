@@ -27,6 +27,8 @@ class Simulation:
         self.cars_spawned = 0
         self.cars_crossed = set()
         self.throughput = 0
+        self.TotalStopTime=0
+        self.amountcarscrossed=0
 
     def create_road(self, start, end,type=None):
         road = Road(start, end,type)
@@ -170,7 +172,14 @@ class Simulation:
                 if vehicle.id not in self.cars_crossed:
                     self.cars_crossed.add(vehicle.id)
                     self.update_troughput()
-                    #print(self.throughput)
+                    self.TotalStopTime=self.TotalStopTime+vehicle.getTotalStopTime()
+                    vehicle.totalStopTime=0
+                    if(vehicle.crossedsemaphor==False):
+                        self.amountcarscrossed+=1
+                    vehicle.crossedsemaphor=True
+                    if(self.amountcarscrossed!=0):
+                        print(self.TotalStopTime/self.amountcarscrossed)
+
 
                 # If vehicle has a next road
                 if vehicle.current_road_index + 1 < len(vehicle.path):
