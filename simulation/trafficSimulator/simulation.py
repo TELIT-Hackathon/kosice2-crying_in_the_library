@@ -26,8 +26,8 @@ class Simulation:
         self.cars_crossed = set()
         self.throughput = 0
 
-    def create_road(self, start, end):
-        road = Road(start, end)
+    def create_road(self, start, end,type=None):
+        road = Road(start, end,type)
         self.roads.append(road)
         return road
 
@@ -51,10 +51,11 @@ class Simulation:
         # Update every road
         for road in self.roads:
             road.update(self.dt)
-            self.road_priority.append(self.countRoadPrio(road))
-            vehicleCount = self.countVehicles(road)
-            self.road_vehiclesGreenTime.append(self.countGreenTime(vehicleCount))
-            print(self.road_vehiclesGreenTime)
+            if road.type == "Inbound":
+                self.road_priority.append(self.countRoadPrio(road))
+                vehicleCount = self.countVehicles(road)
+                self.road_vehiclesGreenTime.append(self.countGreenTime(vehicleCount))
+                print(self.road_vehiclesGreenTime)
         # Add vehicles
         for gen in self.generators:
             gen.update()
@@ -137,6 +138,9 @@ class Simulation:
         for i in range(vehicleCount-1):
             s = i*car_length+(i+1)*gap_length
             t = math.sqrt(2*s-car_acc)
+            for j in range(i):
+                if t > 1:
+                    t = math.log(t)
             greenTime += t
         return greenTime
 
