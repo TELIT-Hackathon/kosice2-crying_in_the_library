@@ -19,7 +19,7 @@ class Vehicle:
         self.l = 4
         self.s0 = 4
         self.T = 1
-        self.v_max = 2
+        self.v_max = 16
         self.a_max = 1.44
         self.b_max = 4.61
 
