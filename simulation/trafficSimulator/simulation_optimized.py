@@ -75,15 +75,15 @@ class Simulation2:
                     self.traffic_signals[self.traffic_order[i][j]].update(self.traffic_time[i])
                     if self.traffic_signals[self.traffic_order[i][j]].current_cycle_index == 0:
                         #if i < len(self.traffic_order)-1:
+                        #nth number of road should be lit to green
                         self.max_index = self.choose_prio_road()
                         optimal_x = 0
-                        for x in range(len(self.traffic_order)):
-                            for y in range(len(self.traffic_order[x])):
-                               if self.traffic_order[x][y] == self.max_index:
-                                optimal_x = x
+
+                        for index,node in enumerate(self.traffic_order):
+                            if self.max_index in node:
+                                optimal_x = index
                                 break
-                            #for a in range(len(self.traffic_order[optimal_x])):
-                            #    self.traffic_signals[self.traffic_order[optimal_x][a]].current_cycle_index = 1
+
                             print(self.road_priority)
                             print("OPTIMAL X: " + str(optimal_x))
 
