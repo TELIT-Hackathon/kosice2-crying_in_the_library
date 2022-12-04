@@ -7,7 +7,8 @@ class Simulation:
     def __init__(self, config={}):
         # Set default configuration
         self.set_default_config()
-
+        self.traffic_order = [[1,5],[3,6],[0],[4],[1,5],[2,3],[0]]
+        self.traffic_time = [27,20,15,15,15,15,10]
         # Update configuration
         for attr, val in config.items():
             setattr(self, attr, val)
@@ -58,8 +59,21 @@ class Simulation:
             if signal.current_cycle_index == 1:
                 signal.update(self)
         '''
-
-        for i in range(len(self.traffic_signals)):
+        for i in range(len(self.traffic_order)):
+            for j in range((len(self.traffic_order[i]))):
+                #self.traffic_order[i].update()
+                if self.traffic_signals[self.traffic_order[i][j]].current_cycle_index == 1:
+                    self.traffic_signals[self.traffic_order[i][j]].update(self,self.traffic_time[i])
+                    if self.traffic_signals[self.traffic_order[i][j]].current_cycle_index == 0:
+                        if i < len(self.traffic_order)-1:
+                            try:
+                                self.traffic_signals[self.traffic_order[i+1][j]].current_cycle_index = 1
+                            except:
+                                print()
+                        else:
+                            self.traffic_signals[self.traffic_order[0][0]].current_cycle_index = 1
+                            self.traffic_signals[self.traffic_order[0][1]].current_cycle_index = 1
+        """for i in range(len(self.traffic_signals)):
             if self.traffic_signals[i].current_cycle_index == 1:
                 #print(f'index {i}')
                 self.traffic_signals[i].update(self)
@@ -73,6 +87,8 @@ class Simulation:
                     else:
                         print('here')
                         self.traffic_signals[0].current_cycle_index = 1
+        """
+
 
 
 
